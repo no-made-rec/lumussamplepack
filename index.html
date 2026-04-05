@@ -276,12 +276,24 @@ h1 { text-align: center; font-size: 26px; text-transform: uppercase; }
 
 <a class="fixed-cta" href="#">🔓 LIBERAR PACK COMPLETO - R$ 29</a>
 
+<!-- MODAL -->
 <div class="modal" id="modal">
   <div class="modal-content">
     <h2>Baixar sample grátis</h2>
-    <input type="text" id="nome" placeholder="Seu nome">
-    <input type="email" id="email" placeholder="Seu e-mail">
-    <button onclick="liberarDownload()">LIBERAR ACESSO</button>
+
+    <div id="form-area">
+      <input type="text" id="nome" placeholder="Seu nome">
+      <input type="email" id="email" placeholder="Seu e-mail">
+      <button onclick="liberarDownload()">LIBERAR ACESSO</button>
+    </div>
+
+    <div id="success-area" style="display:none;">
+      <p style="color:#2ecc71; font-weight:bold;">✔ Acesso liberado!</p>
+      <p style="font-size:13px; color:#bbb;">
+        Agora clique novamente em <b>BAIXAR</b>
+      </p>
+    </div>
+
   </div>
 </div>
 
@@ -294,7 +306,6 @@ const sampleList = [
 
 let players=[], current=null;
 let selectedFile="", selectedFileName="";
-let lastClickedBtn=null;
 
 const container=document.getElementById("beats");
 
@@ -304,7 +315,7 @@ sampleList.forEach((s,i)=>{
     <div class="top">
       <strong>${s.display}</strong>
       <div style="display:flex; gap:10px;">
-        <button class="download-btn" onclick="abrirModal('${s.name}','${s.fileName}', this)">BAIXAR</button>
+        <button class="download-btn" onclick="abrirModal('${s.name}','${s.fileName}')">BAIXAR</button>
         <button class="play-btn" id="btn-${i}" onclick="playSample(${i})"></button>
       </div>
     </div>
@@ -316,10 +327,9 @@ sampleList.forEach((s,i)=>{
   </div>`;
 });
 
-function abrirModal(f,n,btn){
+function abrirModal(f,n){
   selectedFile=f;
   selectedFileName=n;
-  lastClickedBtn=btn;
 
   if(localStorage.getItem("leadCapturado")){
     baixarDireto();
@@ -349,14 +359,16 @@ function liberarDownload(){
     mode:"no-cors",
     body:formData
   }).then(()=>{
-    document.getElementById("modal").style.display="none";
-    liberarBotoes();
-  });
-}
+    document.getElementById("form-area").style.display="none";
+    document.getElementById("success-area").style.display="block";
 
-function liberarBotoes(){
-  document.querySelectorAll(".download-btn").forEach(btn=>{
-    btn.style.background="#f1c40f";
+    document.querySelectorAll(".download-btn").forEach(btn=>{
+      btn.style.background="#f1c40f";
+    });
+
+    setTimeout(()=>{
+      document.getElementById("modal").style.display="none";
+    },1500);
   });
 }
 
@@ -399,10 +411,7 @@ function createPlayer(i,url){
     container:"#waveform-"+i,
     waveColor:"#444",
     progressColor:"#65c1fb",
-    height:45,
-    barWidth:2,
-    barGap:3,
-    cursorWidth:0
+    height:45
   });
 
   wave.load(url);
@@ -423,16 +432,11 @@ function createPlayer(i,url){
 sampleList.forEach((s,i)=>{
   createPlayer(i,"preview/"+s.name+".mp3");
 });
-
-window.onload=()=>{
-  if(localStorage.getItem("leadCapturado")){
-    liberarBotoes();
-  }
-}
 </script>
 
 </body>
 </html>
+
 
 
 
