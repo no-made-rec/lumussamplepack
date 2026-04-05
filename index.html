@@ -108,18 +108,33 @@ body {
 
 <script>
 const sampleList = [
-  { name: "kick01", display: "KICK 01", free: true },
-  { name: "snare02", display: "SNARE 02", free: true },
-  { name: "hihat03", display: "HIHAT 03", free: true },
+  { 
+    name: "obliviate", 
+    display: "OBLIVIATE", 
+    fileName: "Obliviate - 140 bpm - Am (@apzin.mix).wav",
+    free: true 
+  },
+  { 
+    name: "momentum", 
+    display: "MOMENTUM", 
+    fileName: "Momentum - 120 bpm - Fm (@apzin.mix).wav",
+    free: true 
+  },
+  { 
+    name: "patronum", 
+    display: "PATRONUM", 
+    fileName: "Patronum - 150 bpm - Gm (@apzin.mix).wav",
+    free: true 
+  },
 
-  { name: "melody01", display: "MELODY 01", free: false },
-  { name: "808_01", display: "808 01", free: false },
-  { name: "perc01", display: "PERC 01", free: false }
+  { name: "sample04", display: "LOCKED SAMPLE", free: false },
+  { name: "sample05", display: "LOCKED SAMPLE", free: false },
+  { name: "sample06", display: "LOCKED SAMPLE", free: false }
 ];
 
 let selectedFile = "";
+let selectedFileName = "";
 let players = [];
-let current = null;
 
 const container = document.getElementById("beats");
 
@@ -128,15 +143,16 @@ sampleList.forEach((s, i) => {
     <div class="beat">
       <div class="top">
         <strong>${s.display}</strong>
-        ${s.free ? `<button class="download-btn" onclick="abrirModal('${s.name}')">BAIXAR</button>` : ""}
+        ${s.free ? `<button class="download-btn" onclick="abrirModal('${s.name}', '${s.fileName}')">BAIXAR</button>` : ""}
       </div>
       <div id="waveform-${i}" class="waveform"></div>
     </div>
   `;
 });
 
-function abrirModal(file){
+function abrirModal(file, fileName){
   selectedFile = file;
+  selectedFileName = fileName;
   document.getElementById("modal").style.display = "flex";
 }
 
@@ -160,7 +176,12 @@ function liberarDownload(){
     mode: "no-cors",
     body: formData
   }).then(() => {
-    window.location.href = "samples/" + selectedFile + ".wav";
+    const link = document.createElement("a");
+    link.href = "samples/" + selectedFile + ".wav";
+    link.download = selectedFileName;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   });
 }
 
@@ -186,6 +207,7 @@ sampleList.forEach((s, i) => {
 
 </body>
 </html>
+
 
 
 
