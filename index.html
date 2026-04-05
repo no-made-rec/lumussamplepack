@@ -8,9 +8,10 @@
 
 <style>
 html { scroll-behavior: smooth; }
-  .play-btn.playing {
-  box-shadow: 0 0 15px rgba(101,193,251,0.8),
-              0 0 30px rgba(101,193,251,0.4);
+
+/* EFEITO DE PULSO NO PLAY DO HTML 1 */
+.play-btn.playing {
+  box-shadow: 0 0 15px rgba(101,193,251,0.8), 0 0 30px rgba(101,193,251,0.4);
   transform: scale(1.05);
 }
 
@@ -98,7 +99,7 @@ h1 {
   transform: scale(1.03);
 }
 
-/* CARD */
+/* CARD - ATUALIZADO COM ESTILO DO HTML 1 */
 .beat {
   background: rgba(255,255,255,0.03);
   padding: 20px;
@@ -106,12 +107,18 @@ h1 {
   margin-bottom: 15px;
   border: 1px solid rgba(255,255,255,0.05);
   transition: 0.3s;
+  cursor: pointer; /* Adicionado */
 }
 
 .beat:hover {
   background: rgba(255,255,255,0.06);
-  transform: translateY(-3px);
-  box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+}
+
+/* CLASSE ACTIVE DO HTML 1 */
+.beat.active {
+  border: 1px solid #65c1fb;
+  background: rgba(101,193,251,0.05);
+  box-shadow: 0 0 20px rgba(101,193,251,0.2);
 }
 
 .top {
@@ -185,11 +192,6 @@ h1 {
   color: #777;
 }
 
-.highlight {
-  color: #f1c40f;
-  font-weight: bold;
-}
-
 /* CTA FIXO */
 .fixed-cta {
   position: fixed;
@@ -198,7 +200,6 @@ h1 {
   transform: translateX(-50%);
   width: 92%;
   max-width: 450px;
-
   background: #2ecc71;
   text-align: center;
   padding: 18px;
@@ -206,9 +207,7 @@ h1 {
   color: #000;
   text-decoration: none;
   border-radius: 22px;
-
   z-index: 9999;
-
   transition: all 0.3s ease;
   animation: pulse 2s infinite;
 }
@@ -293,17 +292,16 @@ h1 {
     <div class="new">POR APENAS R$ 25</div>
   </div>
 
- <a class="cta" href="https://mpago.li/2vmebhd" target="_blank">
-  QUERO O PACK COMPLETO
-</a>
+  <a class="cta" href="https://mpago.li/2vmebhd" target="_blank">
+    QUERO O PACK COMPLETO
+  </a>
 
   <div id="beats"></div>
 
   <div class="locked">
     <h2>🔒 Desbloqueie todos os samples</h2>
     <p>Adquira o pack completo e tenha acesso imediato</p>
- <a class="cta" href="https://https://mpago.li/2vmebhd" target="_blank">LIBERAR PACK COMPLETO</a>
-
+    <a class="cta" href="https://mpago.li/2vmebhd" target="_blank">LIBERAR PACK COMPLETO</a>
   </div>
 
   <div class="footer">
@@ -311,11 +309,8 @@ h1 {
   </div>
 </div>
 
-</div>
-
 <a class="fixed-cta" href="https://mpago.li/2vmebhd" target="_blank">COMPRAR AGORA</a>
 
-<!-- MODAL -->
 <div class="modal" id="modal">
   <div class="modal-content">
     <h2>Baixar sample grátis</h2>
@@ -337,14 +332,15 @@ let selectedFile="", selectedFileName="", selectedBtn=null;
 
 const container=document.getElementById("beats");
 
+// HTML GERADO COM ID NO CARD E ONCLICK
 samples.forEach((s,i)=>{
   container.innerHTML+=`
-  <div class="beat">
+  <div class="beat" id="beat-row-${i}" onclick="playSample(${i})">
     <div class="top">
       <strong>${s.display}</strong>
       <div style="display:flex; gap:10px;">
-        <button class="download-btn" onclick="handleDownload(this,'${s.name}','${s.file}')">BAIXAR</button>
-        <button class="play-btn" id="btn-${i}" onclick="playSample(${i})"></button>
+        <button class="download-btn" onclick="event.stopPropagation(); handleDownload(this,'${s.name}','${s.file}')">BAIXAR</button>
+        <button class="play-btn" id="btn-${i}"></button>
       </div>
     </div>
     <div id="waveform-${i}" class="waveform"></div>
@@ -394,16 +390,27 @@ function baixar(){
   link.click();
 }
 
+// FUNÇÃO ATUALIZADA PARA ALTERNAR CLASSE ACTIVE NO CARD
 function playSample(i){
+  const btn = document.getElementById("btn-"+i);
+  const row = document.getElementById("beat-row-"+i);
+
   if(current!==null && current!==i){
     players[current].pause();
     document.getElementById("btn-"+current).classList.remove("playing");
+    document.getElementById("beat-row-"+current).classList.remove("active");
   }
 
   players[i].playPause();
   current=i;
 
-  document.getElementById("btn-"+i).classList.toggle("playing");
+  if (players[i].isPlaying()) {
+    btn.classList.add("playing");
+    row.classList.add("active");
+  } else {
+    btn.classList.remove("playing");
+    row.classList.remove("active");
+  }
 }
 
 function createPlayer(i,url){
@@ -419,6 +426,13 @@ function createPlayer(i,url){
   });
 
   wave.load(url);
+  
+  // Adicionado para limpar o estado visual quando terminar
+  wave.on('finish', () => {
+    document.getElementById("btn-"+i).classList.remove("playing");
+    document.getElementById("beat-row-"+i).classList.remove("active");
+  });
+
   players[i]=wave;
 }
 
