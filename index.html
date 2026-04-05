@@ -159,6 +159,10 @@ h1 {
   transition:0.3s;
 }
 
+.download-btn.liberado {
+  background: #f1c40f;
+}
+
 /* WAVE */
 .waveform {
   margin-top: 15px;
@@ -284,49 +288,17 @@ h1 {
   <h1>SAMPLE PACK PREMIUM</h1>
   <p class="subtitle">Samples profissionais prontos para uso</p>
 
-  <div class="price">
-    <div class="old">De R$ 79,90</div>
-    <div class="new">R$ 29</div>
-  </div>
-
-  <a class="cta" href="#">QUERO O PACK COMPLETO</a>
-
   <div id="beats"></div>
-
-  <div class="locked">
-    <h2>🔒 Você só viu uma parte...</h2>
-    <p>Desbloqueie todos os samples agora.</p>
-    <a class="cta" href="#">LIBERAR PACK COMPLETO</a>
-  </div>
-
-  <div class="footer">
-    <p style="margin-bottom:20px;color:#999;">
-      ⚠️ Licença de uso não-exclusiva (Lease) ⚠️<br>
-      Para adquirir exclusividade, entre em contato
-    </p>
-    <p>© 2026 Nômade Record's</p>
-  </div>
 </div>
-
-<a class="fixed-cta" href="#">APROVEITAR OFERTA - R$ 29</a>
 
 <!-- MODAL -->
 <div class="modal" id="modal">
   <div class="modal-content">
     <h2>Baixar sample grátis</h2>
 
-    <div id="form-area">
-      <input type="text" id="nome" placeholder="Seu nome">
-      <input type="email" id="email" placeholder="Seu e-mail">
-      <button onclick="liberarDownload()">LIBERAR ACESSO</button>
-    </div>
-
-    <div id="success-area" style="display:none;">
-      <p style="color:#2ecc71; font-weight:bold;">✔ Acesso liberado!</p>
-      <p style="font-size:13px; color:#bbb;">
-        Agora clique novamente em BAIXAR
-      </p>
-    </div>
+    <input type="text" id="nome" placeholder="Seu nome">
+    <input type="email" id="email" placeholder="Seu e-mail">
+    <button onclick="liberarDownload()">LIBERAR ACESSO</button>
   </div>
 </div>
 
@@ -339,6 +311,7 @@ const sampleList = [
 
 let players=[], current=null;
 let selectedFile="", selectedFileName="";
+let selectedBtn=null;
 
 const container=document.getElementById("beats");
 
@@ -348,23 +321,20 @@ sampleList.forEach((s,i)=>{
     <div class="top">
       <strong>${s.display}</strong>
       <div style="display:flex; gap:10px;">
-        <button class="download-btn" onclick="abrirModal('${s.name}','${s.fileName}')">BAIXAR</button>
+        <button class="download-btn" onclick="handleDownload(this,'${s.name}','${s.fileName}')">BAIXAR</button>
         <button class="play-btn" id="btn-${i}" onclick="playSample(${i})"></button>
       </div>
     </div>
     <div id="waveform-${i}" class="waveform"></div>
-    <div class="info">
-      <span>FREE SAMPLE</span>
-      <span class="time-display" id="time-${i}">00:00 / 00:00</span>
-    </div>
   </div>`;
 });
 
-function abrirModal(f,n){
+function handleDownload(btn,f,n){
   selectedFile=f;
   selectedFileName=n;
+  selectedBtn=btn;
 
-  if(localStorage.getItem("leadCapturado")){
+  if(btn.classList.contains("liberado")){
     baixarDireto();
     return;
   }
@@ -381,8 +351,6 @@ function liberarDownload(){
     return;
   }
 
-  localStorage.setItem("leadCapturado","true");
-
   const formData=new FormData();
   formData.append("entry.1591479266", nome);
   formData.append("entry.903292203", email);
@@ -391,18 +359,10 @@ function liberarDownload(){
     method:"POST",
     mode:"no-cors",
     body:formData
-  }).then(()=>{
-    document.getElementById("form-area").style.display="none";
-    document.getElementById("success-area").style.display="block";
-
-    document.querySelectorAll(".download-btn").forEach(btn=>{
-      btn.style.background="#f1c40f";
-    });
-
-    setTimeout(()=>{
-      document.getElementById("modal").classList.remove("active");
-    },1500);
   });
+
+  selectedBtn.classList.add("liberado");
+  document.getElementById("modal").classList.remove("active");
 }
 
 function baixarDireto(){
@@ -412,31 +372,16 @@ function baixarDireto(){
   link.click();
 }
 
-window.onclick=function(e){
-  const modal=document.getElementById("modal");
-  if(e.target===modal){
-    modal.classList.remove("active");
-  }
-}
-
 function playSample(i){
   if(current!==null && current!==i){
     players[current].pause();
     document.getElementById("btn-"+current).classList.remove("playing");
-    document.getElementById("row-"+current).classList.remove("active");
   }
 
   players[i].playPause();
   current=i;
 
   document.getElementById("btn-"+i).classList.toggle("playing");
-  document.getElementById("row-"+i).classList.toggle("active");
-}
-
-function formatTime(s){
-  const m=Math.floor(s/60);
-  const sec=Math.floor(s%60);
-  return m+":"+(sec<10?"0":"")+sec;
 }
 
 function createPlayer(i,url){
@@ -452,27 +397,24 @@ function createPlayer(i,url){
   });
 
   wave.load(url);
-
-  wave.on("ready",()=>{
-    document.getElementById("time-"+i).innerText =
-      "00:00 / " + formatTime(wave.getDuration());
-  });
-
-  wave.on("audioprocess",()=>{
-    document.getElementById("time-"+i).innerText =
-      formatTime(wave.getCurrentTime()) + " / " + formatTime(wave.getDuration());
-  });
-
   players[i]=wave;
 }
 
 sampleList.forEach((s,i)=>{
   createPlayer(i,"preview/"+s.name+".mp3");
 });
+
+window.onclick=function(e){
+  const modal=document.getElementById("modal");
+  if(e.target===modal){
+    modal.classList.remove("active");
+  }
+}
 </script>
 
 </body>
 </html>
+
 
 
 
