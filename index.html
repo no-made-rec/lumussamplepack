@@ -31,7 +31,7 @@ body {
   filter: drop-shadow(0 5px 15px rgba(101,193,251,0.3));
 }
 
-/* TITULO */
+/* TEXTOS */
 h1 {
   text-align: center;
   font-size: 26px;
@@ -73,7 +73,7 @@ h1 {
   font-weight: 900;
 }
 
-/* BOTÃO */
+/* CTA */
 .cta {
   display: block;
   text-align: center;
@@ -109,12 +109,6 @@ h1 {
   box-shadow: 0 10px 30px rgba(0,0,0,0.6);
 }
 
-.beat.active {
-  border: 1px solid #65c1fb;
-  background: rgba(101,193,251,0.05);
-}
-
-/* TOPO */
 .top {
   display: flex;
   justify-content: space-between;
@@ -168,15 +162,7 @@ h1 {
 /* WAVE */
 .waveform { margin-top: 15px; }
 
-.info {
-  display:flex;
-  justify-content:space-between;
-  font-size:12px;
-  color:#888;
-  margin-top:8px;
-}
-
-/* BLOCO LOCK */
+/* LOCKED */
 .locked {
   text-align: center;
   margin: 40px 0;
@@ -230,25 +216,46 @@ h1 {
   z-index: 99999;
 }
 
-.modal.active { display:flex; }
+.modal.active {
+  display: flex;
+}
 
 .modal-content {
-  background:#111;
-  padding:30px;
-  border-radius:20px;
-  width:90%;
-  max-width:350px;
-  text-align:center;
+  background: #111;
+  padding: 30px;
+  border-radius: 20px;
+  width: 90%;
+  max-width: 350px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
 }
 
 .modal-content input {
-  width:100%;
-  padding:12px;
-  margin:10px 0;
-  border:none;
-  border-radius:10px;
-  background:#222;
-  color:white;
+  width: 100%;
+  padding: 12px;
+  margin: 10px 0;
+  border: none;
+  border-radius: 10px;
+  background: #222;
+  color: white;
+}
+
+.modal-content button {
+  width: 100%;
+  padding: 14px;
+  border: none;
+  border-radius: 14px;
+  background: #65c1fb;
+  color: #000;
+  font-weight: 900;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.modal-content button:hover {
+  background: #fff;
+  transform: scale(1.02);
 }
 </style>
 </head>
@@ -273,7 +280,8 @@ h1 {
 
   <div class="locked">
     <h2>🔒 Desbloqueie todos os samples</h2>
-    <p>Baixe grátis alguns samples e desbloqueie o pack completo</p>
+    <p>Adquira o pack completo e tenha acesso imediato</p>
+    <a class="cta" href="#">LIBERAR PACK COMPLETO</a>
   </div>
 
   <div class="footer">
@@ -283,7 +291,6 @@ h1 {
     </p>
     <p>© 2026 Nômade Record's</p>
   </div>
-
 </div>
 
 <a class="fixed-cta" href="#">COMPRAR AGORA</a>
@@ -292,8 +299,8 @@ h1 {
 <div class="modal" id="modal">
   <div class="modal-content">
     <h2>Baixar sample grátis</h2>
-    <input id="nome" placeholder="Seu nome">
-    <input id="email" placeholder="Seu e-mail">
+    <input type="text" id="nome" placeholder="Seu nome">
+    <input type="email" id="email" placeholder="Seu e-mail">
     <button onclick="liberarDownload()">LIBERAR</button>
   </div>
 </div>
@@ -338,6 +345,24 @@ function handleDownload(btn,f,n){
 }
 
 function liberarDownload(){
+  const nome = document.getElementById("nome").value;
+  const email = document.getElementById("email").value;
+
+  if(!nome || !email){
+    alert("Preencha os dados");
+    return;
+  }
+
+  const formData = new FormData();
+  formData.append("entry.1591479266", nome);
+  formData.append("entry.903292203", email);
+
+  fetch("https://docs.google.com/forms/d/e/1FAIpQLScXwpFyh8UYRnRsnoLKwFKaGO78hnuHTztNsC1sNpeKVteeiA/formResponse",{
+    method:"POST",
+    mode:"no-cors",
+    body:formData
+  });
+
   selectedBtn.classList.add("liberado");
   document.getElementById("modal").classList.remove("active");
 }
@@ -390,6 +415,7 @@ window.onclick=function(e){
 
 </body>
 </html>
+
 
 
 
