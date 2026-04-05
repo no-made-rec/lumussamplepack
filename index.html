@@ -31,6 +31,7 @@ body {
   filter: drop-shadow(0 5px 15px rgba(101,193,251,0.3));
 }
 
+/* TITULO */
 h1 {
   text-align: center;
   font-size: 26px;
@@ -53,7 +54,26 @@ h1 {
   box-shadow: 0 20px 40px rgba(0,0,0,0.8), 0 0 25px rgba(101,193,251,0.15);
 }
 
-/* CTA */
+/* PREÇO */
+.price {
+  text-align: center;
+  margin-bottom: 35px;
+}
+
+.old {
+  text-decoration: line-through;
+  color: #ff4d4d;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.new {
+  font-size: 36px;
+  color: #2ecc71;
+  font-weight: 900;
+}
+
+/* BOTÃO */
 .cta {
   display: block;
   text-align: center;
@@ -67,7 +87,11 @@ h1 {
   text-transform: uppercase;
   transition: 0.3s;
 }
-.cta:hover { background: #fff; transform: scale(1.02); }
+
+.cta:hover {
+  background: #fff;
+  transform: scale(1.03);
+}
 
 /* CARD */
 .beat {
@@ -82,6 +106,7 @@ h1 {
 .beat:hover {
   background: rgba(255,255,255,0.06);
   transform: translateY(-3px);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.6);
 }
 
 .beat.active {
@@ -89,6 +114,7 @@ h1 {
   background: rgba(101,193,251,0.05);
 }
 
+/* TOPO */
 .top {
   display: flex;
   justify-content: space-between;
@@ -100,8 +126,8 @@ h1 {
   background: #65c1fb;
   border: none;
   border-radius: 50%;
-  width: 40px;
-  height: 40px;
+  width: 42px;
+  height: 42px;
   display:flex;
   align-items:center;
   justify-content:center;
@@ -140,15 +166,32 @@ h1 {
 }
 
 /* WAVE */
-.waveform {
-  margin-top: 15px;
-}
+.waveform { margin-top: 15px; }
 
 .info {
   display:flex;
   justify-content:space-between;
   font-size:12px;
   color:#888;
+  margin-top:8px;
+}
+
+/* BLOCO LOCK */
+.locked {
+  text-align: center;
+  margin: 40px 0;
+  padding: 30px;
+  background: #111;
+  border: 1px dashed #333;
+  border-radius: 28px;
+}
+
+/* FOOTER */
+.footer {
+  text-align: center;
+  color: #555;
+  font-size: 12px;
+  margin: 50px 0 100px;
 }
 
 /* CTA FIXO */
@@ -219,7 +262,28 @@ h1 {
   <h1>SAMPLE PACK PREMIUM</h1>
   <p class="subtitle">Samples profissionais prontos para uso</p>
 
+  <div class="price">
+    <div class="old">De R$ 79,90</div>
+    <div class="new">R$ 29</div>
+  </div>
+
+  <a class="cta" href="#">QUERO O PACK COMPLETO</a>
+
   <div id="beats"></div>
+
+  <div class="locked">
+    <h2>🔒 Desbloqueie todos os samples</h2>
+    <p>Baixe grátis alguns samples e desbloqueie o pack completo</p>
+  </div>
+
+  <div class="footer">
+    <p>
+      ⚠️ Licença de uso não-exclusiva (Lease) ⚠️<br>
+      Para adquirir exclusividade entre em contato
+    </p>
+    <p>© 2026 Nômade Record's</p>
+  </div>
+
 </div>
 
 <a class="fixed-cta" href="#">COMPRAR AGORA</a>
@@ -248,7 +312,7 @@ const container=document.getElementById("beats");
 
 samples.forEach((s,i)=>{
   container.innerHTML+=`
-  <div class="beat" id="row-${i}">
+  <div class="beat">
     <div class="top">
       <strong>${s.display}</strong>
       <div style="display:flex; gap:10px;">
@@ -326,6 +390,7 @@ window.onclick=function(e){
 
 </body>
 </html>
+
 
 
 
