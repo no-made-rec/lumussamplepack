@@ -51,21 +51,9 @@ h1 {
   box-shadow: 0 20px 40px rgba(0,0,0,0.8), 0 0 25px rgba(101,193,251,0.15);
 }
 
-.price {
-  text-align: center;
-  margin-bottom: 35px;
-}
-
-.old {
-  text-decoration: line-through;
-  color: #ff4d4d;
-}
-
-.new {
-  font-size: 36px;
-  color: #2ecc71;
-  font-weight: 900;
-}
+.price { text-align: center; margin-bottom: 35px; }
+.old { text-decoration: line-through; color: #ff4d4d; }
+.new { font-size: 36px; color: #2ecc71; font-weight: 900; }
 
 .cta {
   display: block;
@@ -80,25 +68,29 @@ h1 {
   text-transform: uppercase;
   transition: 0.3s;
 }
+.cta:hover { background: #fff; transform: scale(1.02); }
 
-.cta:hover {
-  background: #fff;
-  transform: scale(1.02);
-}
-
+/* CARD */
 .beat {
   background: rgba(255,255,255,0.03);
   padding: 20px;
   border-radius: 24px;
   margin-bottom: 15px;
   border: 1px solid rgba(255,255,255,0.05);
-  transition: 0.3s;
+  transition: all 0.25s ease;
+  cursor: pointer;
+}
+
+.beat:hover {
+  background: rgba(255,255,255,0.06);
+  transform: translateY(-3px) scale(1.01);
+  box-shadow: 0 15px 40px rgba(0,0,0,0.7);
 }
 
 .beat.active {
   border: 1px solid #65c1fb;
   background: rgba(101,193,251,0.05);
-  box-shadow: 0 0 20px rgba(101,193,251,0.2);
+  box-shadow: 0 0 25px rgba(101,193,251,0.3);
 }
 
 .top {
@@ -107,23 +99,26 @@ h1 {
   align-items: center;
 }
 
-/* PLAY CENTRALIZADO */
+/* PLAY */
 .play-btn {
   background: #65c1fb;
   border: none;
   border-radius: 50%;
   width: 42px;
   height: 42px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  transition:0.2s;
+}
+
+.beat:hover .play-btn {
+  transform: scale(1.1);
 }
 
 .play-btn::before {
   content: "";
-  width: 0;
-  height: 0;
   border-left: 10px solid #000;
   border-top: 6px solid transparent;
   border-bottom: 6px solid transparent;
@@ -137,6 +132,7 @@ h1 {
   border-right: 3px solid #000;
 }
 
+/* DOWNLOAD */
 .download-btn {
   background: #2ecc71;
   color: #000;
@@ -145,10 +141,20 @@ h1 {
   border-radius: 12px;
   font-weight: bold;
   cursor: pointer;
+  transition:0.3s;
 }
 
-.waveform { margin-top: 15px; }
+/* WAVE */
+.waveform {
+  margin-top: 15px;
+  transition:0.3s;
+}
 
+.beat:hover .waveform {
+  filter: brightness(1.2);
+}
+
+/* INFO */
 .info {
   display: flex;
   justify-content: space-between;
@@ -162,6 +168,7 @@ h1 {
   font-family: monospace;
 }
 
+/* LOCKED */
 .locked {
   text-align: center;
   margin: 40px 0;
@@ -171,6 +178,7 @@ h1 {
   border-radius: 28px;
 }
 
+/* FOOTER */
 .footer {
   text-align: center;
   color: #555;
@@ -178,6 +186,7 @@ h1 {
   margin: 50px 0 100px;
 }
 
+/* CTA FIXO */
 .fixed-cta {
   position: fixed;
   bottom: 20px;
@@ -193,6 +202,13 @@ h1 {
   text-decoration: none;
   border-radius: 22px;
   z-index: 9999;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% { box-shadow: 0 0 0 0 rgba(46,204,113,0.7); }
+  70% { box-shadow: 0 0 0 20px rgba(46,204,113,0); }
+  100% { box-shadow: 0 0 0 0 rgba(46,204,113,0); }
 }
 
 /* MODAL */
@@ -204,6 +220,7 @@ h1 {
   display:none;
   justify-content:center;
   align-items:center;
+  z-index:99999;
 }
 
 .modal-content {
@@ -217,10 +234,23 @@ h1 {
 
 .modal-content input {
   width:100%;
-  padding:10px;
-  margin:8px 0;
+  padding:12px;
+  margin:10px 0;
   border:none;
-  border-radius:8px;
+  border-radius:10px;
+  background:#222;
+  color:white;
+}
+
+.modal-content button {
+  width:100%;
+  padding:14px;
+  border:none;
+  border-radius:14px;
+  background:#65c1fb;
+  color:#000;
+  font-weight:900;
+  cursor:pointer;
 }
 </style>
 </head>
@@ -245,7 +275,7 @@ h1 {
 
   <div class="locked">
     <h2>🔒 Você só viu uma parte...</h2>
-    <p>Desbloqueie todos os samples em alta qualidade agora.</p>
+    <p>Desbloqueie todos os samples agora.</p>
     <a class="cta" href="#">LIBERAR PACK COMPLETO</a>
   </div>
 
@@ -287,7 +317,7 @@ sampleList.forEach((s,i)=>{
     <div class="top">
       <strong>${s.display}</strong>
       <div style="display:flex; gap:10px;">
-        <button class="download-btn" onclick="abrirModal('${s.name}','${s.fileName}')">BAIXAR</button>
+        <button class="download-btn" onclick="abrirModal('${s.name}','${s.fileName}', this)">BAIXAR</button>
         <button class="play-btn" id="btn-${i}" onclick="playSample(${i})"></button>
       </div>
     </div>
@@ -299,15 +329,25 @@ sampleList.forEach((s,i)=>{
   </div>`;
 });
 
-function abrirModal(f,n){
+function abrirModal(f,n,btn){
   selectedFile=f;
   selectedFileName=n;
+
+  if(localStorage.getItem("leadCapturado")){
+    baixarDireto();
+    btn.style.background="#f1c40f";
+    btn.innerText="DOWNLOAD";
+    return;
+  }
+
   document.getElementById("modal").style.display="flex";
 }
 
 function liberarDownload(){
   const nome=document.getElementById("nome").value;
   const email=document.getElementById("email").value;
+
+  localStorage.setItem("leadCapturado","true");
 
   const formData=new FormData();
   formData.append("entry.1591479266", nome);
@@ -318,26 +358,48 @@ function liberarDownload(){
     mode:"no-cors",
     body:formData
   }).then(()=>{
-    const link=document.createElement("a");
-    link.href="samples/"+selectedFile+".wav";
-    link.download=selectedFileName;
-    link.click();
+    baixarDireto();
     document.getElementById("modal").style.display="none";
+    atualizarBotoes();
   });
+}
+
+function baixarDireto(){
+  const link=document.createElement("a");
+  link.href="samples/"+selectedFile+".wav";
+  link.download=selectedFileName;
+  link.click();
+}
+
+function atualizarBotoes(){
+  document.querySelectorAll(".download-btn").forEach(btn=>{
+    btn.style.background="#f1c40f";
+    btn.innerText="DOWNLOAD";
+  });
+}
+
+window.onclick=function(e){
+  const modal=document.getElementById("modal");
+  if(e.target===modal){
+    modal.style.display="none";
+  }
 }
 
 function playSample(i){
   if(current!==null && current!==i){
-    players[current].pause();
+    players[current].fadeOut(200);
+    setTimeout(()=>players[current].pause(),200);
     document.getElementById("btn-"+current).classList.remove("playing");
     document.getElementById("row-"+current).classList.remove("active");
   }
 
-  players[i].playPause();
+  players[i].play();
+  players[i].fadeIn(200);
+
   current=i;
 
-  document.getElementById("btn-"+i).classList.toggle("playing");
-  document.getElementById("row-"+i).classList.toggle("active");
+  document.getElementById("btn-"+i).classList.add("playing");
+  document.getElementById("row-"+i).classList.add("active");
 }
 
 function formatTime(s){
@@ -375,6 +437,12 @@ function createPlayer(i,url){
 sampleList.forEach((s,i)=>{
   createPlayer(i,"preview/"+s.name+".mp3");
 });
+
+window.onload=()=>{
+  if(localStorage.getItem("leadCapturado")){
+    atualizarBotoes();
+  }
+}
 </script>
 
 </body>
