@@ -7,10 +7,6 @@
 <script src="https://unpkg.com/wavesurfer.js"></script>
 
 <style>
-html {
-  scroll-behavior: smooth;
-}
-
 body {
   margin: 0;
   background: radial-gradient(circle at top, #111, #000);
@@ -25,96 +21,11 @@ body {
   padding-bottom: 120px;
 }
 
-.logo {
-  display: block;
-  margin: 20px auto;
-  height: 80px;
-  filter: drop-shadow(0 5px 15px rgba(101,193,251,0.3));
-}
-
-h1 {
-  text-align: center;
-  font-size: 26px;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-}
-
-.subtitle {
-  text-align: center;
-  color: #bbb;
-  margin-bottom: 20px;
-  font-size: 14px;
-}
-
-.cover {
-  width: 100%;
-  max-height: 168px;
-  object-fit: cover;
-  object-position: center;
-  border-radius: 24px;
-  margin-bottom: 25px;
-  box-shadow: 0 20px 40px rgba(0,0,0,0.8), 0 0 25px rgba(101,193,251,0.15);
-}
-
-.price {
-  text-align: center;
-  margin-bottom: 35px;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-}
-
-.old {
-  text-decoration: line-through;
-  color: #ff4d4d;
-  font-size: 20px;
-  font-weight: bold;
-  opacity: 0.8;
-}
-
-.new {
-  font-size: 36px;
-  color: #2ecc71;
-  font-weight: 900;
-  margin-top: 5px;
-}
-
-.cta {
-  display: block;
-  text-align: center;
-  background: #65c1fb;
-  color: #000;
-  padding: 18px;
-  border-radius: 20px;
-  margin: 20px 0;
-  text-decoration: none;
-  font-weight: 800;
-  transition: all 0.3s ease;
-  text-transform: uppercase;
-}
-
-.cta:hover {
-  background: #fff;
-  transform: scale(1.02);
-}
-
 .beat {
   background: rgba(255,255,255,0.03);
   padding: 20px;
   border-radius: 24px;
   margin-bottom: 15px;
-  border: 1px solid rgba(255,255,255,0.05);
-  transition: 0.3s;
-  cursor: pointer;
-}
-
-.beat:hover {
-  background: rgba(255,255,255,0.06);
-}
-
-.beat.active {
-  border: 1px solid #65c1fb;
-  background: rgba(101,193,251,0.05);
-  box-shadow: 0 0 20px rgba(101,193,251,0.2);
 }
 
 .top {
@@ -123,110 +34,57 @@ h1 {
   align-items: center;
 }
 
-.play-btn {
-  background: #65c1fb;
+.download-btn {
+  background: #2ecc71;
+  color: #000;
   border: none;
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: 0.2s;
-  position: relative;
-}
-
-.play-btn::before {
-  content: "";
-  display: block;
-  width: 0;
-  height: 0;
-  border-top: 6px solid transparent;
-  border-bottom: 6px solid transparent;
-  border-left: 10px solid #000;
-  margin-left: 3px;
-}
-
-.play-btn.playing::before {
-  border: none;
-  width: 10px;
-  height: 12px;
-  border-left: 3px solid #000;
-  border-right: 3px solid #000;
-  margin-left: 0;
-}
-
-.info {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  color: #888;
-  font-size: 12px;
-  margin-top: 8px;
+  padding: 6px 14px;
+  border-radius: 12px;
   font-weight: bold;
-}
-
-.time-display {
-  color: #65c1fb;
-  font-family: monospace;
-  font-size: 13px;
+  cursor: pointer;
 }
 
 .waveform {
   margin-top: 15px;
 }
 
-.locked {
-  text-align: center;
-  margin: 40px 0;
-  padding: 30px;
-  background: #111;
-  border: 1px dashed #333;
-  border-radius: 28px;
-}
-
-.footer {
-  text-align: center;
-  color: #555;
-  font-size: 12px;
-  margin: 50px 0 100px;
-}
-
-.fixed-cta {
+.modal {
   position: fixed;
-  bottom: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 92%;
-  max-width: 450px;
-  background: #2ecc71; 
-  text-align: center;
-  padding: 18px;
-  font-weight: 900;
-  color: #000;
-  text-decoration: none;
-  border-radius: 22px;
-  box-shadow: 0 10px 40px rgba(0,0,0,0.8);
-  z-index: 9999;
-  transition: all 0.3s ease; 
-  animation: slideUp 0.6s ease, pulse 2s infinite;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background: rgba(0,0,0,0.85);
+  display:none;
+  justify-content:center;
+  align-items:center;
 }
 
-.fixed-cta:hover {
-  background: #fff;
-  transform: translateX(-50%) scale(1.05);
+.modal-content {
+  background:#111;
+  padding:30px;
+  border-radius:20px;
+  text-align:center;
+  width:90%;
+  max-width:350px;
 }
 
-@keyframes pulse {
-  0% { box-shadow: 0 0 0 0 rgba(46, 204, 113, 0.7); }
-  70% { box-shadow: 0 0 0 20px rgba(46, 204, 113, 0); }
-  100% { box-shadow: 0 0 0 0 rgba(46, 204, 113, 0); }
+.modal-content input {
+  width:100%;
+  padding:10px;
+  margin:8px 0;
+  border:none;
+  border-radius:8px;
 }
 
-@keyframes slideUp {
-  from { opacity: 0; transform: translate(-50%, 40px); }
-  to { opacity: 1; transform: translate(-50%, 0); }
+.modal-content button {
+  width:100%;
+  padding:12px;
+  margin-top:10px;
+  background:#65c1fb;
+  border:none;
+  font-weight:bold;
+  cursor:pointer;
 }
 </style>
 </head>
@@ -234,80 +92,76 @@ h1 {
 <body>
 
 <div class="container">
-  <img src="img/logo.png" class="logo">
-  <img src="img/capa.jpg" class="cover">
-
-  <h1>SAMPLE PACK PREMIUM</h1>
-  <p class="subtitle">Samples Profissionais • Prontos para produção</p>  
-
-  <div class="price">
-    <div class="old">De R$ 79,90</div>
-    <div class="new">Por apenas R$ 29</div>
-  </div>
-
-  <a class="cta" href="#">QUERO O PACK COMPLETO</a>
-
+  <h1>SAMPLE PACK</h1>
   <div id="beats"></div>
+</div>
 
-  <div class="locked">
-    <h2>🔒 Desbloqueie + Samples</h2>
-    <p>Você já testou alguns... agora leve o pack completo em alta qualidade (WAV)</p>
-    <a class="cta" href="#">LIBERAR TUDO</a>
-  </div>
-
-  <div class="footer">
-    <p style="margin-bottom: 20px; color: #999;">
-      ⚠️ Licença de uso não-exclusiva (Lease) ⚠️<br> 
-      Para adquirir exclusividade, entre em contato
-    </p>
-    <p>© 2026 Nômade Record's. Todos os direitos reservados.</p>
+<div class="modal" id="modal">
+  <div class="modal-content">
+    <h2>Baixar sample grátis</h2>
+    <p>Digite seus dados para liberar</p>
+    <input type="text" id="nome" placeholder="Seu nome">
+    <input type="email" id="email" placeholder="Seu e-mail">
+    <button onclick="liberarDownload()">LIBERAR DOWNLOAD</button>
   </div>
 </div>
 
-<a class="fixed-cta" href="#">APROVEITAR OFERTA</a>
-
 <script>
 const sampleList = [
-  { name: "kick01", display: "KICK 01 • FREE", free: true },
-  { name: "snare02", display: "SNARE 02 • FREE", free: true },
-  { name: "hihat03", display: "HIHAT 03 • FREE", free: true },
+  { name: "kick01", display: "KICK 01", free: true },
+  { name: "snare02", display: "SNARE 02", free: true },
+  { name: "hihat03", display: "HIHAT 03", free: true },
 
   { name: "melody01", display: "MELODY 01", free: false },
   { name: "808_01", display: "808 01", free: false },
   { name: "perc01", display: "PERC 01", free: false }
 ];
 
+let selectedFile = "";
 let players = [];
 let current = null;
+
 const container = document.getElementById("beats");
 
-sampleList.forEach((sample, i) => {
+sampleList.forEach((s, i) => {
   container.innerHTML += `
-    <div class="beat" id="beat-row-${i}" onclick="playSample(${i})">
+    <div class="beat">
       <div class="top">
-        <strong>${sample.display}</strong>
-
-        <div style="display:flex; gap:10px; align-items:center;">
-          ${sample.free ? `<a href="samples/${sample.name}.wav" download onclick="event.stopPropagation()">⬇</a>` : ``}
-          <button class="play-btn" id="btn-${i}"></button>
-        </div>
-
+        <strong>${s.display}</strong>
+        ${s.free ? `<button class="download-btn" onclick="abrirModal('${s.name}')">BAIXAR</button>` : ""}
       </div>
-
       <div id="waveform-${i}" class="waveform"></div>
-
-      <div class="info">
-        <span>${sample.free ? "FREE DOWNLOAD" : "PREVIEW"}</span>
-        <span class="time-display" id="time-${i}">00:00 / 00:00</span>
-      </div>
     </div>
   `;
 });
 
-function formatTime(seconds) {
-  const min = Math.floor(seconds / 60);
-  const sec = Math.floor(seconds % 60);
-  return min.toString().padStart(2, '0') + ':' + sec.toString().padStart(2, '0');
+function abrirModal(file){
+  selectedFile = file;
+  document.getElementById("modal").style.display = "flex";
+}
+
+function liberarDownload(){
+  const nome = document.getElementById("nome").value;
+  const email = document.getElementById("email").value;
+
+  if(!nome || !email){
+    alert("Preencha todos os campos");
+    return;
+  }
+
+  const formURL = "https://docs.google.com/forms/d/e/1FAIpQLScXwpFyh8UYRnRsnoLKwFKaGO78hnuHTztNsC1sNpeKVteeiA/formResponse";
+  const formData = new FormData();
+
+  formData.append("entry.1591479266", nome);
+  formData.append("entry.903292203", email);
+
+  fetch(formURL, {
+    method: "POST",
+    mode: "no-cors",
+    body: formData
+  }).then(() => {
+    window.location.href = "samples/" + selectedFile + ".wav";
+  });
 }
 
 function createPlayer(index, url) {
@@ -315,62 +169,23 @@ function createPlayer(index, url) {
     container: '#waveform-' + index,
     waveColor: '#444',
     progressColor: '#65c1fb',
-    height: 45,
+    height: 50,
     barWidth: 2,
     barGap: 3,
-    barRadius: 3,
     cursorWidth: 0
   });
 
   wave.load(url);
-
-  wave.on('ready', () => {
-    const duration = formatTime(wave.getDuration());
-    document.getElementById(`time-${index}`).innerText = `00:00 / ${duration}`;
-  });
-
-  wave.on('audioprocess', () => {
-    const currentTime = formatTime(wave.getCurrentTime());
-    const duration = formatTime(wave.getDuration());
-    document.getElementById(`time-${index}`).innerText = `${currentTime} / ${duration}`;
-  });
-
-  wave.on('finish', () => {
-    document.getElementById(`btn-${index}`).classList.remove('playing');
-    document.getElementById(`beat-row-${index}`).classList.remove('active');
-  });
-
   players[index] = wave;
 }
 
-function playSample(index) {
-  const btn = document.getElementById(`btn-${index}`);
-  const row = document.getElementById(`beat-row-${index}`);
-
-  if (current !== null && current !== index) {
-    players[current].pause();
-    document.getElementById(`beat-row-${current}`).classList.remove('active');
-    document.getElementById(`btn-${current}`).classList.remove('playing');
-  }
-
-  players[index].playPause();
-  current = index;
-
-  if (players[index].isPlaying()) {
-    btn.classList.add('playing');
-    row.classList.add('active');
-  } else {
-    btn.classList.remove('playing');
-    row.classList.remove('active');
-  }
-}
-
-sampleList.forEach((sample, i) => {
-  createPlayer(i, "preview/" + sample.name + ".mp3");
+sampleList.forEach((s, i) => {
+  createPlayer(i, "preview/" + s.name + ".mp3");
 });
 </script>
 
 </body>
 </html>
+
 
 
