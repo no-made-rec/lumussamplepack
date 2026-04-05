@@ -48,7 +48,7 @@ h1 {
   object-fit: cover;
   border-radius: 24px;
   margin-bottom: 25px;
-  box-shadow: 0 20px 40px rgba(0,0,0,0.8);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.8), 0 0 25px rgba(101,193,251,0.15);
 }
 
 .price {
@@ -78,14 +78,33 @@ h1 {
   text-decoration: none;
   font-weight: 800;
   text-transform: uppercase;
+  transition: 0.3s;
 }
 
+.cta:hover {
+  background: #fff;
+  transform: scale(1.02);
+}
+
+/* SAMPLE CARD */
 .beat {
   background: rgba(255,255,255,0.03);
   padding: 20px;
   border-radius: 24px;
   margin-bottom: 15px;
   border: 1px solid rgba(255,255,255,0.05);
+  transition: 0.3s;
+  cursor: pointer;
+}
+
+.beat:hover {
+  background: rgba(255,255,255,0.06);
+}
+
+.beat.active {
+  border: 1px solid #65c1fb;
+  background: rgba(101,193,251,0.05);
+  box-shadow: 0 0 20px rgba(101,193,251,0.2);
 }
 
 .top {
@@ -94,6 +113,7 @@ h1 {
   align-items: center;
 }
 
+/* PLAY */
 .play-btn {
   background: #65c1fb;
   border: none;
@@ -122,6 +142,7 @@ h1 {
   border-right: 3px solid #000;
 }
 
+/* DOWNLOAD */
 .download-btn {
   background: #2ecc71;
   color: #000;
@@ -132,10 +153,25 @@ h1 {
   cursor: pointer;
 }
 
+/* INFO */
+.info {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 8px;
+  font-size: 12px;
+  color: #888;
+}
+
+.time-display {
+  color: #65c1fb;
+  font-family: monospace;
+}
+
 .waveform {
   margin-top: 15px;
 }
 
+/* LOCKED */
 .locked {
   text-align: center;
   margin: 40px 0;
@@ -145,6 +181,7 @@ h1 {
   border-radius: 28px;
 }
 
+/* FIXED CTA */
 .fixed-cta {
   position: fixed;
   bottom: 20px;
@@ -213,12 +250,10 @@ h1 {
   <div class="locked">
     <h2>🔒 Desbloqueie todos os samples</h2>
   </div>
-
 </div>
 
 <a class="fixed-cta" href="#">COMPRAR AGORA</a>
 
-<!-- MODAL -->
 <div class="modal" id="modal">
   <div class="modal-content">
     <h2>Baixar sample grátis</h2>
@@ -230,19 +265,19 @@ h1 {
 
 <script>
 const sampleList = [
-  { name:"obliviate", display:"OBLIVIATE", fileName:"Obliviate - 140 bpm - Am (@apzin.mix).wav", free:true },
-  { name:"momentum", display:"MOMENTUM", fileName:"Momentum - 120 bpm - Fm (@apzin.mix).wav", free:true },
-  { name:"patronum", display:"PATRONUM", fileName:"Patronum - 150 bpm - Gm (@apzin.mix).wav", free:true }
+  { name:"obliviate", display:"OBLIVIATE", fileName:"Obliviate - 140 bpm - Am (@apzin.mix).wav" },
+  { name:"momentum", display:"MOMENTUM", fileName:"Momentum - 120 bpm - Fm (@apzin.mix).wav" },
+  { name:"patronum", display:"PATRONUM", fileName:"Patronum - 150 bpm - Gm (@apzin.mix).wav" }
 ];
 
-let selectedFile="", selectedFileName="";
 let players=[], current=null;
+let selectedFile="", selectedFileName="";
 
 const container=document.getElementById("beats");
 
 sampleList.forEach((s,i)=>{
   container.innerHTML+=`
-  <div class="beat">
+  <div class="beat" id="row-${i}">
     <div class="top">
       <strong>${s.display}</strong>
       <div style="display:flex; gap:10px;">
@@ -251,6 +286,10 @@ sampleList.forEach((s,i)=>{
       </div>
     </div>
     <div id="waveform-${i}" class="waveform"></div>
+    <div class="info">
+      <span>FREE SAMPLE</span>
+      <span class="time-display" id="time-${i}">00:00</span>
+    </div>
   </div>`;
 });
 
@@ -281,33 +320,17 @@ function liberarDownload(){
 }
 
 function playSample(i){
-  if(current!==null&&current!==i){
+  if(current!==null && current!==i){
     players[current].pause();
     document.getElementById("btn-"+current).classList.remove("playing");
+    document.getElementById("row-"+current).classList.remove("active");
   }
+
   players[i].playPause();
   current=i;
-  document.getElementById("btn-"+i).classList.toggle("playing");
-}
 
-function createPlayer(i,url){
-  const wave=WaveSurfer.create({
-    container:"#waveform-"+i,
-    waveColor:"#444",
-    progressColor:"#65c1fb",
-    height:45
-  });
-  wave.load(url);
-  players[i]=wave;
-}
+  document.getElementById("btn-"+i).classList
 
-sampleList.forEach((s,i)=>{
-  createPlayer(i,"preview/"+s.name+".mp3");
-});
-</script>
-
-</body>
-</html>
 
 
 
