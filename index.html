@@ -7,6 +7,8 @@
 <script src="https://unpkg.com/wavesurfer.js"></script>
 
 <style>
+html { scroll-behavior: smooth; }
+
 body {
   margin: 0;
   background: radial-gradient(circle at top, #111, #000);
@@ -21,11 +23,25 @@ body {
   padding-bottom: 120px;
 }
 
+/* HEADER */
+h1 {
+  text-align: center;
+  font-size: 26px;
+  text-transform: uppercase;
+}
+
+/* SAMPLE CARD */
 .beat {
   background: rgba(255,255,255,0.03);
   padding: 20px;
   border-radius: 24px;
   margin-bottom: 15px;
+  border: 1px solid rgba(255,255,255,0.05);
+  transition: 0.3s;
+}
+
+.beat:hover {
+  background: rgba(255,255,255,0.06);
 }
 
 .top {
@@ -34,6 +50,37 @@ body {
   align-items: center;
 }
 
+/* BOTÃO PLAY */
+.play-btn {
+  background: #65c1fb;
+  border: none;
+  border-radius: 50%;
+  width: 38px;
+  height: 38px;
+  cursor: pointer;
+  position: relative;
+}
+
+.play-btn::before {
+  content: "";
+  border-left: 10px solid #000;
+  border-top: 6px solid transparent;
+  border-bottom: 6px solid transparent;
+  position: absolute;
+  left: 14px;
+  top: 13px;
+}
+
+.play-btn.playing::before {
+  border: none;
+  width: 10px;
+  height: 12px;
+  border-left: 3px solid #000;
+  border-right: 3px solid #000;
+  left: 13px;
+}
+
+/* DOWNLOAD BONITO */
 .download-btn {
   background: #2ecc71;
   color: #000;
@@ -42,12 +89,24 @@ body {
   border-radius: 12px;
   font-weight: bold;
   cursor: pointer;
+  font-size: 12px;
 }
 
 .waveform {
   margin-top: 15px;
 }
 
+/* LOCKED */
+.locked {
+  text-align: center;
+  margin: 40px 0;
+  padding: 30px;
+  background: #111;
+  border: 1px dashed #333;
+  border-radius: 28px;
+}
+
+/* MODAL */
 .modal {
   position: fixed;
   top:0;
@@ -58,6 +117,7 @@ body {
   display:none;
   justify-content:center;
   align-items:center;
+  z-index:9999;
 }
 
 .modal-content {
@@ -92,10 +152,17 @@ body {
 <body>
 
 <div class="container">
-  <h1>SAMPLE PACK</h1>
+  <h1>SAMPLE PACK PREMIUM</h1>
+
   <div id="beats"></div>
+
+  <div class="locked">
+    <h2>🔒 Desbloqueie o Pack Completo</h2>
+    <p>Leve todos os samples em alta qualidade (WAV)</p>
+  </div>
 </div>
 
+<!-- MODAL -->
 <div class="modal" id="modal">
   <div class="modal-content">
     <h2>Baixar sample grátis</h2>
@@ -125,25 +192,25 @@ const sampleList = [
     display: "PATRONUM", 
     fileName: "Patronum - 150 bpm - Gm (@apzin.mix).wav",
     free: true 
-  },
-
-  { name: "sample04", display: "LOCKED SAMPLE", free: false },
-  { name: "sample05", display: "LOCKED SAMPLE", free: false },
-  { name: "sample06", display: "LOCKED SAMPLE", free: false }
+  }
 ];
 
 let selectedFile = "";
 let selectedFileName = "";
 let players = [];
+let current = null;
 
 const container = document.getElementById("beats");
 
 sampleList.forEach((s, i) => {
   container.innerHTML += `
-    <div class="beat">
+    <div class="beat" id="row-${i}">
       <div class="top">
         <strong>${s.display}</strong>
-        ${s.free ? `<button class="download-btn" onclick="abrirModal('${s.name}', '${s.fileName}')">BAIXAR</button>` : ""}
+        <div style="display:flex; gap:10px;">
+          <button class="download-btn" onclick="abrirModal('${s.name}', '${s.fileName}')">BAIXAR</button>
+          <button class="play-btn" id="btn-${i}" onclick="playSample(${i})"></button>
+        </div>
       </div>
       <div id="waveform-${i}" class="waveform"></div>
     </div>
@@ -185,12 +252,24 @@ function liberarDownload(){
   });
 }
 
+function playSample(index){
+  if(current !== null && current !== index){
+    players[current].pause();
+    document.getElementById(`btn-${current}`).classList.remove("playing");
+  }
+
+  players[index].playPause();
+  current = index;
+
+  document.getElementById(`btn-${index}`).classList.toggle("playing");
+}
+
 function createPlayer(index, url) {
   const wave = WaveSurfer.create({
     container: '#waveform-' + index,
     waveColor: '#444',
     progressColor: '#65c1fb',
-    height: 50,
+    height: 45,
     barWidth: 2,
     barGap: 3,
     cursorWidth: 0
@@ -207,6 +286,7 @@ sampleList.forEach((s, i) => {
 
 </body>
 </html>
+
 
 
 
