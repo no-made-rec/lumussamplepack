@@ -86,7 +86,6 @@ h1 {
   transform: scale(1.02);
 }
 
-/* SAMPLE CARD */
 .beat {
   background: rgba(255,255,255,0.03);
   padding: 20px;
@@ -94,11 +93,6 @@ h1 {
   margin-bottom: 15px;
   border: 1px solid rgba(255,255,255,0.05);
   transition: 0.3s;
-  cursor: pointer;
-}
-
-.beat:hover {
-  background: rgba(255,255,255,0.06);
 }
 
 .beat.active {
@@ -113,7 +107,6 @@ h1 {
   align-items: center;
 }
 
-/* PLAY */
 .play-btn {
   background: #65c1fb;
   border: none;
@@ -142,7 +135,6 @@ h1 {
   border-right: 3px solid #000;
 }
 
-/* DOWNLOAD */
 .download-btn {
   background: #2ecc71;
   color: #000;
@@ -153,7 +145,8 @@ h1 {
   cursor: pointer;
 }
 
-/* INFO */
+.waveform { margin-top: 15px; }
+
 .info {
   display: flex;
   justify-content: space-between;
@@ -167,39 +160,6 @@ h1 {
   font-family: monospace;
 }
 
-.waveform {
-  margin-top: 15px;
-}
-
-/* LOCKED */
-.locked {
-  text-align: center;
-  margin: 40px 0;
-  padding: 30px;
-  background: #111;
-  border: 1px dashed #333;
-  border-radius: 28px;
-}
-
-/* FIXED CTA */
-.fixed-cta {
-  position: fixed;
-  bottom: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 92%;
-  max-width: 450px;
-  background: #2ecc71;
-  text-align: center;
-  padding: 18px;
-  font-weight: 900;
-  color: #000;
-  text-decoration: none;
-  border-radius: 22px;
-  z-index: 9999;
-}
-
-/* MODAL */
 .modal {
   position: fixed;
   top:0; left:0;
@@ -246,20 +206,14 @@ h1 {
   <a class="cta" href="#">QUERO O PACK COMPLETO</a>
 
   <div id="beats"></div>
-
-  <div class="locked">
-    <h2>🔒 Desbloqueie todos os samples</h2>
-  </div>
 </div>
-
-<a class="fixed-cta" href="#">COMPRAR AGORA</a>
 
 <div class="modal" id="modal">
   <div class="modal-content">
     <h2>Baixar sample grátis</h2>
     <input type="text" id="nome" placeholder="Seu nome">
     <input type="email" id="email" placeholder="Seu e-mail">
-    <button onclick="liberarDownload()">LIBERAR</button>
+    <button onclick="liberarDownload()">LIBERAR DOWNLOAD</button>
   </div>
 </div>
 
@@ -288,7 +242,7 @@ sampleList.forEach((s,i)=>{
     <div id="waveform-${i}" class="waveform"></div>
     <div class="info">
       <span>FREE SAMPLE</span>
-      <span class="time-display" id="time-${i}">00:00</span>
+      <span class="time-display" id="time-${i}">00:00 / 00:00</span>
     </div>
   </div>`;
 });
@@ -303,6 +257,11 @@ function liberarDownload(){
   const nome=document.getElementById("nome").value;
   const email=document.getElementById("email").value;
 
+  if(!nome || !email){
+    alert("Preencha tudo");
+    return;
+  }
+
   const formData=new FormData();
   formData.append("entry.1591479266", nome);
   formData.append("entry.903292203", email);
@@ -316,6 +275,8 @@ function liberarDownload(){
     link.href="samples/"+selectedFile+".wav";
     link.download=selectedFileName;
     link.click();
+
+    document.getElementById("modal").style.display="none";
   });
 }
 
@@ -329,7 +290,50 @@ function playSample(i){
   players[i].playPause();
   current=i;
 
-  document.getElementById("btn-"+i).classList
+  document.getElementById("btn-"+i).classList.toggle("playing");
+  document.getElementById("row-"+i).classList.toggle("active");
+}
+
+function formatTime(s){
+  const m=Math.floor(s/60);
+  const sec=Math.floor(s%60);
+  return m+":"+(sec<10?"0":"")+sec;
+}
+
+function createPlayer(i,url){
+  const wave=WaveSurfer.create({
+    container:"#waveform-"+i,
+    waveColor:"#444",
+    progressColor:"#65c1fb",
+    height:45,
+    barWidth:2,
+    barGap:3,
+    cursorWidth:0
+  });
+
+  wave.load(url);
+
+  wave.on("ready",()=>{
+    document.getElementById("time-"+i).innerText =
+      "00:00 / " + formatTime(wave.getDuration());
+  });
+
+  wave.on("audioprocess",()=>{
+    document.getElementById("time-"+i).innerText =
+      formatTime(wave.getCurrentTime()) + " / " + formatTime(wave.getDuration());
+  });
+
+  players[i]=wave;
+}
+
+sampleList.forEach((s,i)=>{
+  createPlayer(i,"preview/"+s.name+".mp3");
+});
+</script>
+
+</body>
+</html>
+
 
 
 
